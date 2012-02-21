@@ -1,0 +1,37 @@
+\documentclass[draft]{article}
+
+\usepackage{../style/akmassey}
+\usepackage{../style/msword}
+
+\begin{document}
+
+\section{Introduction} % (fold)
+\label{sec:introduction}
+Let's start testing the comments.  Here's a comment with the default initials and no highlighted text.
+
+Alice was beginning to get very \comment{These sample paragraphs are from the first chapter of Lewis Carroll's \emph{Alice in Wonderland}.  Please note that the original text shouldn't have weird spacing at the place where the comment was inserted, but it does.}tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, `and what is the use of a book,' thought Alice `without pictures or conversation?'
+
+here's a comment that uses non-default initials and still doesn't highlight text.
+
+So she was \comment[pno]{This comment should have a different counter.  Is it possible to setup counters based on the initials passed?}considering in her own mind (as well as she could, for the hot day made her feel very sleepy and stupid), whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her.
+
+Here's a comment that uses the default initials and highlights some text.
+
+There was nothing so VERY remarkable in that; nor did Alice think it so VERY much out of the way to hear the Rabbit say to itself, `Oh dear! Oh dear! I shall be late!' (when she thought it over afterwards, \comment{This should also have no strange artifacts at the place where it was inserted.  It should also have a fancyline pointing to the highlighted portion of the text.}{it occurred to her that she ought to have wondered at this}, but at the time it all seemed quite natural); but when the Rabbit actually TOOK A WATCH OUT OF ITS WAISTCOAT-POCKET, and looked at it, and then hurried on, Alice started to her feet, for it flashed across her mind that she had never before seen a rabbit with either a waistcoat-pocket, or a watch to take out of it, and burning with curiosity, she ran across the field after it, and fortunately was just in time to see it pop down a large rabbit-hole under the hedge.
+
+In another moment down went Alice after it, \comment[pno]{Basically, this is the same as before, but it should be for a different author, preferably with a different counter and a different color text.}{never once considering how in the world she was to get out again}.
+
+It's probably also a good idea to test these things in lists.  Let's try making a few comments in a list environment.
+
+\begin{enumerate}
+	\item This is the first item in the list.
+	\item This is the second item in the list.
+	\item This is the \comment{This should be the third item in the list!}{fourth} item in the list.
+	\item This is the fourth item in the list.
+	\item This is the \comment{Here's a comment in a list with no highlighting.}final item in the list.
+\end{enumerate}
+% section introduction (end)
+
+Obviously, there are many other environments that we should test these things in, but this is already going to be a huge post.  I'll stop here.
+
+\end{document}

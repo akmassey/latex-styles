@@ -1,0 +1,14 @@
+*.aux
+*.pdf
+*.ps
+*.log
+*.dvi
+*.out
+
+# for BibTeX
+*.bbl
+*.blg
+
+# for PDF sync
+*.synctex.gz
+*.fdb_latexmk

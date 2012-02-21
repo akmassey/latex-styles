@@ -1,0 +1,193 @@
+% This style file attempts to provide commands that can be used to re-create MS-Word 
+% style comments in LaTeX files.  Please see the following URLs for more information:
+%
+%     http://tex.stackexchange.com/questions/5959/cool-text-highlighting-in-latex
+%     http://tex.stackexchange.com/questions/43841/ms-word-style-comments
+% 
+% Please note that this style file also makes heavy use of the todonotes package.
+% You can find more information about todonotes here: 
+%
+%     http://www.ctan.org/tex-archive/macros/latex/contrib/todonotes/
+% 
+% There are three ways to use these commands.  First, you can do the following: 
+% 
+%     \comment[akm]{This is comment text that will appear in the margin.}{This is 
+%         body text that will appear in the main output.}
+%
+% Second, you can do the following, which will appear only as a note in the margin:
+%
+%     \comment[akm]{Here's a comment that won't highlight any text.}
+% 
+% Third, if you're Aaron, then you can leave out the initials.  Obviously, anyone 
+% else reading this should consider altering the command for their own default 
+% initials.
+%
+%     \comment{Here's a margin note using the default initials.}
+
+% For conditional control flow in draft mode.  Please note that comments will only 
+% appear when the document is compiled in draft mode.
+\usepackage{ifdraft}
+
+% For larger margins when in draft mode
+\ifdraft{\usepackage[rmargin=3in,marginparwidth=2.75in]{geometry}}{}
+
+% For todo notes in the margins
+\usepackage{todonotes}
+
+% For highlighting in MS Word-like comments
+\usepackage{soul,color}
+
+% Set pastel red highlighting 
+\sethlcolor{red!100!green!33}
+
+% This is a simple comment system that doesn't include a counter.  If the more complex 
+% code doesn't work for your needs, you can always just create a custom command for  
+% each contributing author.
+\newcommand{\akm}[2][]
+{\todo[color=red!100!green!33, size=\small, fancyline, #1]{AKM: #2}}
+
+% This is needed to ensure the line spacing of the margin notes is correct.
+\usepackage{setspace}
+
+% For conditional use of the \comment command based on the options provided.
+\usepackage{ifthen}
+
+% Commenting out in favor of a highlighting comment system
+% \newcounter{akmctr}
+%  \newcommand{\comment}[2][akm]{
+%     % initials of the author (optional) + note in the margin
+%     \ifdraft{\refstepcounter{akmctr}
+%     {
+%         \setstretch{1.0}% line spacing
+%         \todo[color={red!100!green!33},size=\small,fancyline]{%
+%             \textbf{Comment [\uppercase{#1} \arabic{akmctr}]:}~#2}%
+% 		}
+% 	}{}
+% }
+
+% BEGIN: The following code provides a highlighting command, which is used in my
+% custom commenting system below.  If you want more information about this code, see 
+% the following URL:
+%     http://tex.stackexchange.com/questions/5959/cool-text-highlighting-in-latex
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing}
+
+% \makeatletter
+\newcommand{\defhighlighter}[3][]{%
+  \tikzset{every highlighter/.style={color=#2, fill opacity=#3, #1}}%
+}
+
+\defhighlighter{yellow}{.5}
+
+\newcommand{\highlight@DoHighlight}{
+  \fill [ decoration = {random steps, amplitude=1pt, segment length=15pt}
+        , outer sep = -15pt, inner sep = 0pt, decorate
+        , every highlighter, this highlighter ]
+        ($(begin highlight)+(0,8pt)$) rectangle ($(end highlight)+(0,-3pt)$) ;
+}
+
+\newcommand{\highlight@BeginHighlight}{
+  \coordinate (begin highlight) at (0,0) ;
+}
+
+\newcommand{\highlight@EndHighlight}{
+  \coordinate (end highlight) at (0,0) ;
+}
+
+\newdimen\highlight@previous
+\newdimen\highlight@current
+
+\DeclareRobustCommand*\highlight[1][]{%
+  \tikzset{this highlighter/.style={#1}}%
+  \SOUL@setup
+  %
+  \def\SOUL@preamble{%
+    \begin{tikzpicture}[overlay, remember picture]
+      \highlight@BeginHighlight
+      \highlight@EndHighlight
+    \end{tikzpicture}%
+  }%
+  %
+  \def\SOUL@postamble{%
+    \begin{tikzpicture}[overlay, remember picture]
+      \highlight@EndHighlight
+      \highlight@DoHighlight
+    \end{tikzpicture}%
+  }%
+  %
+  \def\SOUL@everyhyphen{%
+    \discretionary{%
+      \SOUL@setkern\SOUL@hyphkern
+      \SOUL@sethyphenchar
+      \tikz[overlay, remember picture] \highlight@EndHighlight ;%
+    }{%
+    }{%
+      \SOUL@setkern\SOUL@charkern
+    }%
+  }%
+  %
+  \def\SOUL@everyexhyphen##1{%
+    \SOUL@setkern\SOUL@hyphkern
+    \hbox{##1}%
+    \discretionary{%
+      \tikz[overlay, remember picture] \highlight@EndHighlight ;%
+    }{%
+    }{%
+      \SOUL@setkern\SOUL@charkern
+    }%
+  }%
+  %
+  \def\SOUL@everysyllable{%
+    \begin{tikzpicture}[overlay, remember picture]
+      \path let \p0 = (begin highlight), \p1 = (0,0) in \pgfextra
+        \global\highlight@previous=\y0
+        \global\highlight@current =\y1
+      \endpgfextra (0,0) ;
+      \ifdim\highlight@current < \highlight@previous
+        \highlight@DoHighlight
+        \highlight@BeginHighlight
+      \fi
+    \end{tikzpicture}%
+    \the\SOUL@syllable
+    \tikz[overlay, remember picture] \highlight@EndHighlight ;%
+  }%
+  \SOUL@
+}
+% \makeatother
+% END: highlighting code
+
+
+% Here's some more code from tex.stackoverflow.com.  Ideally, we want to use this 
+% code to add users to our commenting system.  We would like for each user to have 
+% their own color and their own counter for the highlighter.
+\def\users{}
+\def\adduser#1#2{%
+   \g@addto@macro{\users}{,#1}% adds user to list
+   \expandafter\def\csname #1@color\endcsname{#2}% holds the color name in `\name@color`
+  }
+\def\counterfactory#1{\@for\next:=#1\do{%
+\ifcsname c@\next\endcsname%
+ \else
+   \newcounter\next%
+   \setcounter\next{0}
+\fi
+}}
+\AtBeginDocument{\counterfactory\users}
+
+
+% This is the main function for providing MS Word-style comments.  Much of this code 
+% was developed in the open at this URL:
+% 
+%     http://tex.stackexchange.com/questions/43841/ms-word-style-comments
+\newcommand{\comment}[3][]{%
+    % initials of the author (optional) + note in the margin
+    \ifdraft{\refstepcounter{#1}%
+    {%
+        \setstretch{1.0}% line spacing
+        \todo[color={#1@color},size=\small,fancyline]{%
+            \textbf{Comment [\uppercase{#1} \arabic{#1}]:}~#2}
+        \ifthenelse{\equal{#3}{}}{}{\highlight[#1@color]{#3}}%
+        }%
+    }{}%
+}
