@@ -1,15 +1,15 @@
-# Aaron Massey's LaTeX Styles #
+# Aaron Massey's LaTeX Styles
 
 This repository contains various LaTeX style files I created with example source files that demonstrate their use.  Most of these are basic extensions to the [todonotes package][1].  Some of them are just my preferences for personal use.
 
 
-## The Privacy Place ## 
+## The Privacy Place
 
 File: tpp.sty
 
 These styles replicate the style of the MS Word comments, but hard code the authors and colors.
 
-#### Usage ####
+#### Usage
 
 Each author has their own command defined in the style file.  Currently, there are commands for Aaron, Pat, Annie, and Jessica.  To create a comment simply use the command in the LaTeX file as the following examples demonstrate.
 
@@ -30,14 +30,14 @@ Please note that comments will only appear if the document is in draft mode:
 If you remove the `draft` declaration, then the comments will not be generated and any text that would have been highlighted will appear as normal text in the document.
 
 
-## Personal Preferences ##
+## Personal Preferences
 
 File: akmassey.sty
 
 These are personal preferences and styles that I use whenever I can.  You may find something interesting there.
 
 
-## MS Word Style Comments ##
+## MS Word Style Comments
 
 File: msword.sty
 
