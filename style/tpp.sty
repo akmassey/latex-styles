@@ -148,7 +148,7 @@
             \textbf{Comment [AKM \arabic{akmctr}]:}~#1}
         \ifthenelse{\equal{#2}{}}{}{\highlight[darkpastelblue]{#2}}%
         }%
-    }{}%
+    }{#2}%
 }
 
 % Create comment command for Pat
@@ -162,7 +162,7 @@
             \textbf{Comment [PJM \arabic{pjmctr}]:}~#1}
         \ifthenelse{\equal{#2}{}}{}{\highlight[safetyorange]{#2}}%
         }%
-    }{}%
+    }{#2}%
 }
 
 % Create comment command for Annie
@@ -176,7 +176,7 @@
             \textbf{Comment [AIA \arabic{aiactr}]:}~#1}
         \ifthenelse{\equal{#2}{}}{}{\highlight[darkpastelgreen]{#2}}%
         }%
-    }{}%
+    }{#2}%
 }
 
 % Create comment command for Jessica
@@ -190,5 +190,5 @@
             \textbf{Comment [JYS \arabic{jysctr}]:}~#1}
         \ifthenelse{\equal{#2}{}}{}{\highlight[daffodil]{#2}}%
         }%
-    }{}%
+    }{#2}%
 }
