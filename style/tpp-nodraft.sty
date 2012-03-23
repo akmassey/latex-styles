@@ -1,0 +1,169 @@
+% This style file contains specific comment formatting for the members
+% of The Privacy Place.  It was based on my ongoing efforts to create
+% stable commands that mimic MS-Word style comments in LaTeX.  You can
+% read more about those efforts here:
+%
+%   http://tex.stackexchange.com/questions/5959/cool-text-highlighting-in-latex
+%   http://tex.stackexchange.com/questions/43841/ms-word-style-comments
+% 
+% Please note that this style file also makes heavy use of the todonotes package.
+% You can find more information about todonotes here: 
+%
+%   http://www.ctan.org/tex-archive/macros/latex/contrib/todonotes/
+
+% For todo notes in the margins
+\usepackage{todonotes}
+
+% For highlighting in MS Word-like comments
+\usepackage{soul,color}
+
+% Set pastel red highlighting 
+\sethlcolor{red!100!green!33}
+
+% This is needed to ensure the line spacing of the margin notes is correct.
+\usepackage{setspace}
+
+% For conditional use of the \comment command based on the options provided.
+\usepackage{ifthen}
+
+% BEGIN: The following code provides a highlighting command, which is used in my
+% custom commenting system below.  If you want more information about this code, see 
+% the following URL:
+%     http://tex.stackexchange.com/questions/5959/cool-text-highlighting-in-latex
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing}
+
+% \makeatletter
+\newcommand{\defhighlighter}[3][]{%
+  \tikzset{every highlighter/.style={color=#2, fill opacity=#3, #1}}%
+}
+
+\defhighlighter{yellow}{.5}
+
+\newcommand{\highlight@DoHighlight}{
+  \fill [ decoration = {random steps, amplitude=1pt, segment length=15pt}
+        , outer sep = -15pt, inner sep = 0pt, decorate
+        , every highlighter, this highlighter ]
+        ($(begin highlight)+(0,8pt)$) rectangle ($(end highlight)+(0,-3pt)$) ;
+}
+
+\newcommand{\highlight@BeginHighlight}{
+  \coordinate (begin highlight) at (0,0) ;
+}
+
+\newcommand{\highlight@EndHighlight}{
+  \coordinate (end highlight) at (0,0) ;
+}
+
+\newdimen\highlight@previous
+\newdimen\highlight@current
+
+\DeclareRobustCommand*\highlight[1][]{%
+  \tikzset{this highlighter/.style={#1}}%
+  \SOUL@setup
+  %
+  \def\SOUL@preamble{%
+    \begin{tikzpicture}[overlay, remember picture]
+      \highlight@BeginHighlight
+      \highlight@EndHighlight
+    \end{tikzpicture}%
+  }%
+  %
+  \def\SOUL@postamble{%
+    \begin{tikzpicture}[overlay, remember picture]
+      \highlight@EndHighlight
+      \highlight@DoHighlight
+    \end{tikzpicture}%
+  }%
+  %
+  \def\SOUL@everyhyphen{%
+    \discretionary{%
+      \SOUL@setkern\SOUL@hyphkern
+      \SOUL@sethyphenchar
+      \tikz[overlay, remember picture] \highlight@EndHighlight ;%
+    }{%
+    }{%
+      \SOUL@setkern\SOUL@charkern
+    }%
+  }%
+  %
+  \def\SOUL@everyexhyphen##1{%
+    \SOUL@setkern\SOUL@hyphkern
+    \hbox{##1}%
+    \discretionary{%
+      \tikz[overlay, remember picture] \highlight@EndHighlight ;%
+    }{%
+    }{%
+      \SOUL@setkern\SOUL@charkern
+    }%
+  }%
+  %
+  \def\SOUL@everysyllable{%
+    \begin{tikzpicture}[overlay, remember picture]
+      \path let \p0 = (begin highlight), \p1 = (0,0) in \pgfextra
+        \global\highlight@previous=\y0
+        \global\highlight@current =\y1
+      \endpgfextra (0,0) ;
+      \ifdim\highlight@current < \highlight@previous
+        \highlight@DoHighlight
+        \highlight@BeginHighlight
+      \fi
+    \end{tikzpicture}%
+    \the\SOUL@syllable
+    \tikz[overlay, remember picture] \highlight@EndHighlight ;%
+  }%
+  \SOUL@
+}
+% \makeatother
+% END: highlighting code
+
+% Let's define some colors to use for comments.
+\definecolor{safetyorange}{rgb}{1.0, 0.4, 0.0}
+\definecolor{darkpastelblue}{rgb}{0.47, 0.62, 0.8}
+\definecolor{darkpastelgreen}{rgb}{0.01, 0.75, 0.24}
+\definecolor{daffodil}{rgb}{1.0, 1.0, 0.19}
+
+% The following commands attempt to create single purpose comment commands 
+% for one person based on their initials.  Ideally, we'll be able to have a
+% counter and a color for each person, and we can accomplish this with a
+% custom command for each person.
+
+% Create comment command for Aaron
+\newcounter{akmctr}
+\newcommand{\akm}[2][]{%
+	% initials of the author (optional) + note in the margin
+	\refstepcounter{akmctr}%
+	{%
+	\setstretch{1.0}% line spacing
+	\todo[color={darkpastelblue},size=\small,fancyline]{%
+		\textbf{Comment [AKM \arabic{akmctr}]:}~#1}
+	\ifthenelse{\equal{#2}{}}{}{\highlight[darkpastelblue]{#2}}%
+	}%
+}
+
+% Create comment command for Annie
+\newcounter{aiactr}
+\newcommand{\aia}[2][]{%
+	% initials of the author (optional) + note in the margin
+	\refstepcounter{aiactr}%
+	{%
+	\setstretch{1.0}% line spacing
+	\todo[color={darkpastelgreen},size=\small,fancyline]{%
+		\textbf{Comment [AIA \arabic{aiactr}]:}~#1}
+	\ifthenelse{\equal{#2}{}}{}{\highlight[darkpastelgreen]{#2}}%
+	}%
+}
+
+% Create comment command for Jessica
+\newcounter{jysctr}
+\newcommand{\jys}[2][]{%
+	% initials of the author (optional) + note in the margin
+	\refstepcounter{jysctr}%
+	{%
+	\setstretch{1.0}% line spacing
+	\todo[color={daffodil},size=\small,fancyline]{%
+		\textbf{Comment [AIA \arabic{jysctr}]:}~#1}
+	\ifthenelse{\equal{#2}{}}{}{\highlight[daffodil]{#2}}%
+	}%
+}
