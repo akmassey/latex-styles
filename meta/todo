@@ -1,0 +1,47 @@
+#! /usr/bin/env ruby
+
+@dir = File.join( File.dirname(__FILE__), ".." )
+@meta_reg = /meta\/\.\.\/(meta|\.git|style)/
+@file_type_reg = /\.(aux|log):\d+:/
+
+def remove_unwanted_files(array) 
+  array.reject! do |a| 
+    a =~ @meta_reg
+  end
+
+  array.reject! do |a|
+    a =~ @file_type_reg
+  end
+
+  return array
+end
+
+def print_results(string, results=[]) 
+  puts string
+  results.each_with_index do |line, i|
+    line.gsub!(/\.\/meta\/\.\.\//, "")
+    puts "#{i+1}:\t#{line}"
+  end
+end
+
+def collect_results(command)
+  todo = IO.popen(command)
+  results = remove_unwanted_files(todo.readlines)
+  return results
+end
+
+puts "Working Dir: #{@dir}"
+
+# Collect TODOs
+results = collect_results( "grep -rn TODO #{@dir}" )
+print_results("grep -rn TODO #{@dir}", results)
+
+# Collect FIXMEs
+results = collect_results( "grep -rn FIXME #{@dir}" )
+print_results("\n\ngrep -rn FIXME #{@dir}", results)
+
+# Collect \akm \aia and \jys comments
+results = collect_results( "grep -rn '\\akm' #{@dir}" )
+results += collect_results( "grep -rn '\\aia' #{@dir}" )
+results += collect_results( "grep -rn '\\jys' #{@dir}" )
+print_results("\n\ntodonotes comments", results)
