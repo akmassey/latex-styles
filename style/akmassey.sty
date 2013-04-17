@@ -1,7 +1,8 @@
 % Preferred styles of Aaron Massey <aaron.massey@alumni.purdue.edu>
 
-% Use utf-8 encoding for foreign characters
-\usepackage[utf8]{inputenc}
+% source safe styles that may be used in common with IEEE or other latex
+% formats
+\usepackage{style/akm-common}
 
 % For fancy shadow boxes
 \usepackage{fancybox}
@@ -12,3 +13,29 @@
 \usepackage{mathpazo}
 % There's probably a way to get Optima that's not that crazy.
 % \setsansfont{Optima}
+
+% Ensure a SyncTeX file is built
+\synctex=1
+
+% If you want links to work, but look like plain text, then set all colors to
+% black.
+\usepackage[
+  pdfauthor={Aaron Massey},
+  pdftitle={TODO: Update this title},
+  pdfcreator={pdftex},
+  pdfsubject={TODO: Update this subject},
+  pdfkeywords={TODO, update, keywords},
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=red,
+  filecolor=black,
+  urlcolor=blue,
+]{hyperref}
+
+\hypersetup{final}
+
+% For better typographic adjustments, but only in pdflatex.  Note that this
+% must be loaded after all fonts are loaded.
+% More info: http://ctan.unixbrain.com/macros/latex/contrib/microtype/microtype.pdf
+% See also: http://texblog.net/latex-archive/layout/pdflatex-microtype/
+\usepackage{microtype}
